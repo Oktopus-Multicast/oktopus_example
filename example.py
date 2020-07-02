@@ -1,16 +1,7 @@
-import os
-import sys
-
-from oktopus import load_sessions as ok_load_sessions
 from oktopus import App, Routing, Session, Service
-from oktopus.dataset import OK_NODES_SERVICES_FILE, OK_SESSIONS_SERVICES_FILE
 
 # Application API
 app = App(name='Abilene', topo='Abilene_resources.graphml') # Load the network topology
-
-for node in app.get_nodes():
-    sdn_router = Service(name='sdn_router', ordered=False, resources_cap={'tcam': 10})
-    node.add_service(sdn_router) # add router for each network node
 
 firewall = Service(name='fw', ordered=True, resources_cap={'cpu': 10})
 video_transcoder = Service(name='vt', ordered=True, resources_cap={'cpu': 10})
@@ -34,7 +25,7 @@ app.add_sessions([session]) # add multicast session
 routing = Routing()
 routing.add_objective(name='minroutingcost')
 
-routing.add_node_constraint(node=app.get_node(2), srv=firewall, name='cpu', value=5) # limit firewall usage to 5 cpu
+routing.add_node_constraint(node=app.get_node(9), srv=video_transcoder, name='cpu', value=5) # limit firewall usage to 5 cpu
 
 app.set_routes(routing)
 
